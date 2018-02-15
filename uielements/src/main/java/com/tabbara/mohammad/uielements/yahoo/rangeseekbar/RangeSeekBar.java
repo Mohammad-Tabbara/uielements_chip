@@ -458,7 +458,7 @@ public class RangeSeekBar<T extends Number> extends AppCompatImageView {
         paint.setAntiAlias(true);
 
         // draw min and max labels
-        SimpleDateFormat dateFormat = new SimpleDateFormat("E M d, y");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE MMM dd, yyyy");
         Calendar c1 = Calendar.getInstance();
         c1.add(Calendar.DATE, (int) (30*normalizedMaxValue-30));
         Calendar c2 = Calendar.getInstance();
@@ -623,7 +623,7 @@ public class RangeSeekBar<T extends Number> extends AppCompatImageView {
      * @param value The new normalized min value to set.
      */
     private void setNormalizedMinValue(double value) {
-        normalizedMinValue = Math.max(0d, Math.min(1d, Math.min(value, normalizedMaxValue)));
+        normalizedMinValue = Math.max(0d, Math.min(1d, Math.min(value, normalizedMaxValue-0.034d)));
         invalidate();
     }
 
@@ -633,7 +633,7 @@ public class RangeSeekBar<T extends Number> extends AppCompatImageView {
      * @param value The new normalized max value to set.
      */
     private void setNormalizedMaxValue(double value) {
-        normalizedMaxValue = Math.max(0d, Math.min(1d, Math.max(value, normalizedMinValue)));
+        normalizedMaxValue = Math.max(0d, Math.min(1d, Math.max(value, normalizedMinValue+0.033d)));
         invalidate();
     }
 
