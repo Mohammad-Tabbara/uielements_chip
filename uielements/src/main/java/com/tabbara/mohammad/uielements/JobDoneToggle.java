@@ -16,6 +16,7 @@ import android.widget.ToggleButton;
  */
 
 public class JobDoneToggle extends ToggleButton {
+    private static boolean on = false;
     public JobDoneToggle(Context context) {
         super(context);
         init();
@@ -36,7 +37,11 @@ public class JobDoneToggle extends ToggleButton {
         setText(getResources().getString(R.string.incomplete));
         int padding = (int) getResources().getDimension(R.dimen.small_spacing);
         setPadding(padding,padding,padding,padding);
-        setBackgroundResource(android.R.color.holo_red_light);
+        if(on){
+            setBackgroundResource(android.R.color.holo_green_light);
+        }else{
+            setBackgroundResource(android.R.color.holo_red_light);
+        }
         setTextOff(getResources().getString(R.string.incomplete));
         setTextOn(getResources().getString(R.string.complete));
     }
@@ -45,8 +50,10 @@ public class JobDoneToggle extends ToggleButton {
     public void toggle() {
         super.toggle();
         if(isChecked()){
+            on=true;
             setBackgroundResource(android.R.color.holo_green_light);
         }else{
+            on=false;
             setBackgroundResource(android.R.color.holo_red_light);
         }
     }
