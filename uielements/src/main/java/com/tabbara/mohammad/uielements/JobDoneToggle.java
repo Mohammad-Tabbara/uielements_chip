@@ -1,22 +1,20 @@
 package com.tabbara.mohammad.uielements;
 
 import android.content.Context;
-import android.graphics.Canvas;
-import android.os.Build;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
 
 import android.view.Gravity;
-import android.view.View;
 import android.widget.ToggleButton;
+
+import java.util.HashMap;
 
 /**
  * Created by Mohammad on 2/14/2018.
  */
 
 public class JobDoneToggle extends ToggleButton {
-    private static boolean on = false;
+    private static HashMap<Integer,Boolean> on = new HashMap<>();
     public JobDoneToggle(Context context) {
         super(context);
         init();
@@ -33,11 +31,14 @@ public class JobDoneToggle extends ToggleButton {
     }
 
     private void init(){
+        if(!on.containsKey(getId())){
+            on.put(getId(),false);
+        }
         setGravity(Gravity.START|Gravity.CENTER_VERTICAL);
         setText(getResources().getString(R.string.incomplete));
         int padding = (int) getResources().getDimension(R.dimen.small_spacing);
         setPadding(padding,padding,padding,padding);
-        if(on){
+        if(on.get(getId())){
             setBackgroundResource(android.R.color.holo_green_light);
         }else{
             setBackgroundResource(android.R.color.holo_red_light);
@@ -50,10 +51,10 @@ public class JobDoneToggle extends ToggleButton {
     public void toggle() {
         super.toggle();
         if(isChecked()){
-            on=true;
+            on.put(getId(),true);
             setBackgroundResource(android.R.color.holo_green_light);
         }else{
-            on=false;
+            on.put(getId(),false);
             setBackgroundResource(android.R.color.holo_red_light);
         }
     }
