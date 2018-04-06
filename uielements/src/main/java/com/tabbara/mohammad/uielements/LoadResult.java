@@ -2,9 +2,15 @@ package com.tabbara.mohammad.uielements;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.os.Looper;
+import android.support.annotation.DrawableRes;
+import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -17,28 +23,44 @@ import android.widget.RelativeLayout;
 
 public class LoadResult extends RelativeLayout {
 
+    public final String TAG = getClass().getName();
+    Drawable successDrawable;
+    Drawable failDrawable;
+
     LayoutInflater mInflater;
     ProgressBar progress;
     ImageView result;
+    OnLoadingListener onLoadingListener;
 
     private boolean pass;
 
     public LoadResult(Context context) {
         super(context);
-        init(context);
+        init(context,null);
     }
 
     public LoadResult(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        init(context);
+        init(context,attrs);
     }
 
     public LoadResult(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init(context);
+        init(context,attrs);
     }
 
-    private void init(Context context){
+    private void init(Context context,AttributeSet attrs){
+        TypedArray attributes = context.getTheme().obtainStyledAttributes(
+                attrs,
+                R.styleable.LoadResult,
+                0,0);
+        try {
+            successDrawable = attributes.getDrawable(R.styleable.LoadResult_successDrawable);
+            failDrawable = attributes.getDrawable(R.styleable.LoadResult_failDrawable);
+        }
+        finally {
+            attributes.recycle();
+        }
         pass = false;
         mInflater = LayoutInflater.from(context);
         View v = mInflater.inflate(R.layout.load_result, this, true);
@@ -64,10 +86,11 @@ public class LoadResult extends RelativeLayout {
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                if(onLoadingListener != null) {
+                    Looper.prepare();
+                    onLoadingListener.onLoad();// Need To set Pass Inside here;
+                }else{
+                    Log.e(TAG,"No Listener Was implemented");
                 }
                 ((Activity)getContext()).runOnUiThread(new Runnable() {
                     @Override
@@ -75,14 +98,30 @@ public class LoadResult extends RelativeLayout {
                         progress.animate().alpha(0f).setDuration(400).start();
                         result.animate().alpha(1f).setDuration(400).start();
                         if(pass){
-                            result.setImageResource(R.mipmap.checkmark_icon);
+                            if(successDrawable != null) {
+                                result.setImageDrawable(successDrawable);
+                            }else{
+                                result.setImageResource(R.mipmap.checkmark_icon);
+                            }
                         }else{
-                            result.setImageResource(R.mipmap.error_icon);
+                            if(failDrawable != null) {
+                                result.setImageDrawable(failDrawable);
+                            }else {
+                                result.setImageResource(R.mipmap.error_icon);
+                            }
                         }
                     }
                 });
 
             }
         });
+    }
+
+    public OnLoadingListener getOnLoadingListener() {
+        return onLoadingListener;
+    }
+
+    public void setOnLoadingListener(OnLoadingListener onLoadingListener) {
+        this.onLoadingListener = onLoadingListener;
     }
 }
