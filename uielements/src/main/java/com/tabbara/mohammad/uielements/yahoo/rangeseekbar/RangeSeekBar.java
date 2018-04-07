@@ -55,7 +55,7 @@ public class RangeSeekBar<T extends Number> extends AppCompatImageView {
     public static final int HEIGHT_IN_DP = 30;
     public static final int TEXT_LATERAL_PADDING_IN_DP = 3;
     private static final int INITIAL_PADDING_IN_DP = 8;
-    private final int LINE_HEIGHT_IN_DP = 1;
+    private final int LINE_HEIGHT_IN_DP = 5;
     private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Bitmap thumbImage = BitmapFactory.decodeResource(getResources(), R.mipmap.slider_thumb);
     private final Bitmap thumbPressedImage = BitmapFactory.decodeResource(getResources(),
